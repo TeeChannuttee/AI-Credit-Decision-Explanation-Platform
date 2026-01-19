@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# Data
+data/*.csv
+data/*.json
+!data/llm_train.json
+!data/llm_test.json
+
+# Large Models
+models/fine_tuned_llm/
+fine_tuned_model/
+*.safetensors
+*.bin
+*.model
+*.pt
+*.pkl
+
+# IDEs
+.vscode/
+.idea/
+.project
+.pydevproject
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

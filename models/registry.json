@@ -1,0 +1,36 @@
+{
+  "models": {
+    "1.0.0": {
+      "version": "1.0.0",
+      "model_type": "xgboost",
+      "model_path": "models\\1.0.0\\xgboost_model.pkl",
+      "metrics": {
+        "auc": 0.9422474747474747,
+        "accuracy": 0.8575,
+        "precision": 0.8558951965065502,
+        "recall": 0.8909090909090909
+      },
+      "metadata": {
+        "training_date": "2026-01-19T01:56:56.505292",
+        "data_size": 0,
+        "auto_deployed": true
+      },
+      "registered_at": "2026-01-19T01:56:56.534367",
+      "status": "production"
+    }
+  },
+  "production": "1.0.0",
+  "history": [
+    {
+      "action": "register",
+      "version": "1.0.0",
+      "timestamp": "2026-01-19T01:56:56.534901"
+    },
+    {
+      "action": "set_production",
+      "version": "1.0.0",
+      "previous_version": null,
+      "timestamp": "2026-01-19T01:56:56.536100"
+    }
+  ]
+}

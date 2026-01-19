@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบพิจารณาสินเชื่อ - AI Credit Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --primary-dark: #1e40af;
+            --success: #059669;
+            --success-light: #10b981;
+            --danger: #dc2626;
+            --danger-light: #ef4444;
+            --warning: #d97706;
+            --bg-main: #f8fafc;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo-text p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Trust Indicators */
+        .trust-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--success);
+        }
+
+        .trust-items {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .trust-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .trust-text h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .trust-text p {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border-top: 3px solid var(--primary);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Form */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-group .required {
+            color: var(--danger);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .form-help {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-light);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Result Card */
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            margin-top: 2rem;
+            display: none;
+            border-left: 4px solid var(--primary);
+        }
+
+        .result-card.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .result-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .result-icon.approved {
+            background: var(--success-light);
+            color: white;
+        }
+
+        .result-icon.rejected {
+            background: var(--danger-light);
+            color: white;
+        }
+
+        .result-info h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-info.approved h2 {
+            color: var(--success);
+        }
+
+        .result-info.rejected h2 {
+            color: var(--danger);
+        }
+
+        .result-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge.low {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--success);
+        }
+
+        .badge.medium {
+            background: rgba(217, 119, 6, 0.1);
+            color: var(--warning);
+        }
+
+        .badge.high {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--danger);
+        }
+
+        .result-section {
+            margin-bottom: 2rem;
+        }
+
+        .result-section h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .reason-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .reason-item {
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .feature-name {
+            font-weight: 500;
+        }
+
+        .feature-value {
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .feature-value.positive {
+            color: var(--success);
+        }
+
+        .feature-value.negative {
+            color: var(--danger);
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trust-items {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🏦</div>
+                <div class="logo-text">
+                    <h1>AI Credit Platform</h1>
+                    <p>ระบบพิจารณาสินเชื่ออัตโนมัติ</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <span>👤 เจ้าหน้าที่สินเชื่อ</span>
+                <span>|</span>
+                <span id="currentTime"></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Trust Indicators -->
+        <div class="trust-bar">
+            <div class="trust-items">
+                <div class="trust-item">
+                    <div class="trust-icon">🔒</div>
+                    <div class="trust-text">
+                        <h3>ความปลอดภัย</h3>
+                        <p>เข้ารหัส SSL 256-bit</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">✓</div>
+                    <div class="trust-text">
+                        <h3>ความแม่นยำ</h3>
+                        <p>AUC 0.950 (95%)</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">⚡</div>
+                    <div class="trust-text">
+                        <h3>ความเร็ว</h3>
+                        <p>ผลลัพธ์ใน 3 วินาที</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">📊</div>
+                    <div class="trust-text">
+                        <h3>โปร่งใส</h3>
+                        <p>อธิบายได้ 100%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">คำขอทั้งหมด</div>
+                        <div class="stat-value" id="totalApps">0</div>
+                        <div class="stat-change">↑ พร้อมประมวลผล</div>
+                    </div>
+                    <div class="stat-icon">📋</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">อนุมัติ</div>
+                        <div class="stat-value" style="color: var(--success)" id="approvedCount">0</div>
+                        <div class="stat-change" id="approvalRate">0% อัตราอนุมัติ</div>
+                    </div>
+                    <div class="stat-icon" style="color: var(--success)">✓</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">ไม่อนุมัติ</div>
+                        <div class="stat-value" style="color: var(--danger)" id="rejectedCount">0</div>
+                        <div class="stat-change" id="rejectionRate">0% อัตราปฏิเสธ</div>
+                    </div>
+                    <div class="stat-icon" style="color: var(--danger)">✗</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-label">โมเดล AI</div>
+                        <div class="stat-value" style="font-size: 1.5rem">XGBoost</div>
+                        <div class="stat-change">✓ พร้อมใช้งาน</div>
+                    </div>
+                    <div class="stat-icon" style="color: var(--primary)">🤖</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <div class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title">แบบฟอร์มคำขอสินเชื่อ</h2>
+                        <p class="card-subtitle">กรุณากรอกข้อมูลให้ครบถ้วนเพื่อประเมินสินเชื่อ</p>
+                    </div>
+                </div>
+
+                <form id="applicationForm">
+                    <!-- ข้อมูลส่วนตัว -->
+                    <div class="form-section">
+                        <h3 class="section-title">📋 ข้อมูลส่วนตัว</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>อายุ <span class="required">*</span></label>
+                                <input type="number" id="age" value="35" required min="20" max="70">
+                                <span class="form-help">อายุ 20-70 ปี</span>
+                            </div>
+                            <div class="form-group">
+                                <label>ระดับการศึกษา <span class="required">*</span></label>
+                                <select id="education_level" required>
+                                    <option value="bachelor">ปริญญาตรี</option>
+                                    <option value="high_school">มัธยมศึกษา</option>
+                                    <option value="master">ปริญญาโท</option>
+                                    <option value="phd">ปริญญาเอก</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>สถานภาพสมรส <span class="required">*</span></label>
+                                <select id="marital_status" required>
+                                    <option value="married">สมรส</option>
+                                    <option value="single">โสด</option>
+                                    <option value="divorced">หย่าร้าง</option>
+                                    <option value="widowed">หม้าย</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>จำนวนผู้อยู่ในอุปการะ <span class="required">*</span></label>
+                                <input type="number" id="dependents" value="2" required min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ข้อมูลการทำงาน -->
+                    <div class="form-section">
+                        <h3 class="section-title">💼 ข้อมูลการทำงาน</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>รายได้ต่อเดือน (บาท) <span class="required">*</span></label>
+                                <input type="number" id="monthly_income" value="50000" required min="0">
+                                <span class="form-help">รายได้สุทธิต่อเดือน</span>
+                            </div>
+                            <div class="form-group">
+                                <label>อายุงาน (ปี) <span class="required">*</span></label>
+                                <input type="number" id="employment_years" value="5" required min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>ประเภทการจ้างงาน <span class="required">*</span></label>
+                                <select id="employment_type" required>
+                                    <option value="permanent">พนักงานประจำ</option>
+                                    <option value="contract">พนักงานสัญญาจ้าง</option>
+                                    <option value="self_employed">ธุรกิจส่วนตัว</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ข้อมูลทางการเงิน -->
+                    <div class="form-section">
+                        <h3 class="section-title">💰 ข้อมูลทางการเงิน</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>อัตราส่วนหนี้ต่อรายได้ (DTI) <span class="required">*</span></label>
+                                <input type="number" step="0.01" id="debt_to_income" value="0.30" required min="0"
+                                    max="1">
+                                <span class="form-help">ควรต่ำกว่า 0.40</span>
+                            </div>
+                            <div class="form-group">
+                                <label>สินเชื่อที่มีอยู่ (รายการ) <span class="required">*</span></label>
+                                <input type="number" id="existing_loans" value="1" required min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>จำนวนครั้งที่ชำระล่าช้า <span class="required">*</span></label>
+                                <input type="number" id="late_payment_count" value="0" required min="0">
+                                <span class="form-help">ใน 12 เดือนที่ผ่านมา</span>
+                            </div>
+                            <div class="form-group">
+                                <label>อัตราการใช้วงเงินบัตรเครดิต <span class="required">*</span></label>
+                                <input type="number" step="0.01" id="credit_utilization" value="0.35" required min="0"
+                                    max="1">
+                                <span class="form-help">ควรต่ำกว่า 0.50</span>
+                            </div>
+                            <div class="form-group">
+                                <label>ยอดเงินฝากออมทรัพย์ (บาท) <span class="required">*</span></label>
+                                <input type="number" id="savings_balance" value="250000" required min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>ยอดเงินฝากกระแสรายวัน (บาท) <span class="required">*</span></label>
+                                <input type="number" id="checking_balance" value="50000" required min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>ระยะเวลาประวัติเครดิต (ปี) <span class="required">*</span></label>
+                                <input type="number" id="credit_history_length" value="8" required min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>จำนวนครั้งที่ผิดนัดชำระ <span class="required">*</span></label>
+                                <input type="number" id="previous_defaults" value="0" required min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ข้อมูลที่อยู่อาศัย -->
+                    <div class="form-section">
+                        <h3 class="section-title">🏠 ข้อมูลที่อยู่อาศัย</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>สถานะที่อยู่อาศัย <span class="required">*</span></label>
+                                <select id="home_ownership" required>
+                                    <option value="own">เป็นเจ้าของ</option>
+                                    <option value="mortgage">ผ่อนชำระ</option>
+                                    <option value="rent">เช่า</option>
+                                    <option value="family">อาศัยกับครอบครัว</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ข้อมูลสินเชื่อที่ขอ -->
+                    <div class="form-section">
+                        <h3 class="section-title">📝 ข้อมูลสินเชื่อที่ขอ</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>วงเงินที่ขอ (บาท) <span class="required">*</span></label>
+                                <input type="number" id="requested_amount" value="300000" required min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>วัตถุประสงค์ <span class="required">*</span></label>
+                                <select id="loan_purpose" required>
+                                    <option value="car">ซื้อรถยนต์</option>
+                                    <option value="home">ซื้อบ้าน</option>
+                                    <option value="education">การศึกษา</option>
+                                    <option value="business">ธุรกิจ</option>
+                                    <option value="personal">ส่วนบุคคล</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Enhancement -->
+                    <div class="form-section"
+                        style="background: rgba(30, 58, 138, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px dashed var(--primary); margin-bottom: 2rem;">
+                        <h3 class="section-title" style="border: none; margin-bottom: 0.5rem;">🤖 AI-Powered Explanation
+                            (Experimental)</h3>
+                        <div class="form-group" style="flex-direction: row; align-items: center; gap: 1rem;">
+                            <input type="checkbox" id="use_llm" style="width: auto;">
+                            <label for="use_llm" style="margin: 0; cursor: pointer;">ใช้ Fine-tuned LLM ในการอธิบายผล
+                                (อธิบายเป็นธรรมชาติมากขึ้น)</label>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--danger); margin-top: 0.5rem;">
+                            ⚠️ <strong>หมายเหตุ:</strong> การใช้ LLM บน CPU อาจใช้เวลาประมวลผลนานถึง 1-2 นาทีต่อครั้ง
+                        </p>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">
+                            🚀 ส่งคำขอและประเมินสินเชื่อ
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="fillExample()">
+                            📝 กรอกข้อมูลตัวอย่าง
+                        </button>
+                    </div>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>กำลังประมวลผลคำขอสินเชื่อ...</p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);">โปรดรอสักครู่</p>
+                </div>
+
+                <div class="result-card" id="resultCard">
+                    <!-- Results will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2026 AI Credit Platform | ระบบพิจารณาสินเชื่ออัตโนมัติ | Powered by AI & Machine Learning</p>
+            <p style="margin-top: 0.5rem; font-size: 0.75rem;">
+                🔒 ข้อมูลของคุณได้รับการปกป้องด้วยมาตรฐานความปลอดภัยระดับสากล
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleString('th-TH');
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const response = await fetch('http://localhost:8000/api/stats');
+                const data = await response.json();
+
+                document.getElementById('totalApps').textContent = data.total_applications;
+                document.getElementById('approvedCount').textContent = data.approved;
+                document.getElementById('rejectedCount').textContent = data.rejected;
+                document.getElementById('approvalRate').textContent =
+                    `${(data.approval_rate * 100).toFixed(1)}% อัตราอนุมัติ`;
+                document.getElementById('rejectionRate').textContent =
+                    `${((1 - data.approval_rate) * 100).toFixed(1)}% อัตราปฏิเสธ`;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Form submission
+        document.getElementById('applicationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                application: {
+                    monthly_income: parseFloat(document.getElementById('monthly_income').value),
+                    employment_years: parseInt(document.getElementById('employment_years').value),
+                    employment_type: document.getElementById('employment_type').value,
+                    debt_to_income: parseFloat(document.getElementById('debt_to_income').value),
+                    existing_loans: parseInt(document.getElementById('existing_loans').value),
+                    late_payment_count: parseInt(document.getElementById('late_payment_count').value),
+                    credit_utilization: parseFloat(document.getElementById('credit_utilization').value),
+                    requested_amount: parseFloat(document.getElementById('requested_amount').value),
+                    loan_purpose: document.getElementById('loan_purpose').value,
+                    age: parseInt(document.getElementById('age').value),
+                    education_level: document.getElementById('education_level').value,
+                    marital_status: document.getElementById('marital_status').value,
+                    dependents: parseInt(document.getElementById('dependents').value),
+                    home_ownership: document.getElementById('home_ownership').value,
+                    savings_balance: parseFloat(document.getElementById('savings_balance').value),
+                    checking_balance: parseFloat(document.getElementById('checking_balance').value),
+                    credit_history_length: parseInt(document.getElementById('credit_history_length').value),
+                    previous_defaults: parseInt(document.getElementById('previous_defaults').value)
+                },
+                language: "th",
+                explanation_style: "formal",
+                use_llm: document.getElementById('use_llm').checked
+            };
+
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('resultCard').classList.remove('show');
+
+            try {
+                const response = await fetch('http://localhost:8000/api/decision', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                displayResult(result);
+                loadStats();
+            } catch (error) {
+                alert('เกิดข้อผิดพลาด: ' + error.message);
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+            }
+        });
+
+        // Display result
+        function displayResult(result) {
+            const card = document.getElementById('resultCard');
+            const decision = result.decision;
+            const decisionClass = decision === 'approved' ? 'approved' : 'rejected';
+            const decisionIcon = decision === 'approved' ? '✓' : '✗';
+            const decisionText = decision === 'approved' ? 'อนุมัติ' : 'ไม่อนุมัติ';
+
+            let html = `
+                <div class="result-header">
+                    <div class="result-icon ${decisionClass}">${decisionIcon}</div>
+                    <div class="result-info ${decisionClass}">
+                        <h2>ผลการพิจารณา: ${decisionText}</h2>
+                        <div class="result-meta">
+                            <span>📊 ระดับความเสี่ยง: <span class="badge ${result.risk_level}">${result.risk_level.toUpperCase()}</span></span>
+                            <span>🎯 ความมั่นใจ: ${(result.confidence * 100).toFixed(1)}%</span>
+                            <span>⏱️ ${new Date().toLocaleString('th-TH')}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h3>📊 ข้อมูลการประเมิน</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">คะแนน ML</span>
+                            <span class="info-value">${(result.ml_score * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">ระดับความเสี่ยง</span>
+                            <span class="info-value">${result.risk_level.toUpperCase()}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">ความมั่นใจ</span>
+                            <span class="info-value">${(result.confidence * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">โมเดล</span>
+                            <span class="info-value">XGBoost</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h3>💬 คำอธิบาย</h3>
+                    <p style="background: var(--bg-light); padding: 1.5rem; border-radius: 8px; line-height: 1.8;">
+                        ${result.explanation.summary}
+                    </p>
+                </div>
+
+                ${result.explanation.llm_explanation ? `
+                <div class="result-section" style="border: 1px solid var(--primary-light); padding: 1.5rem; border-radius: 8px; background: aliceblue;">
+                    <h3 style="color: var(--primary);">🤖 AI Analysis (Fine-tuned LLM)</h3>
+                    <p style="font-style: italic; line-height: 1.8;">
+                        "${result.explanation.llm_explanation}"
+                    </p>
+                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 1rem;">
+                        * สร้างโดยโมเดล Phi-3 ที่ผ่านการ Fine-tune ด้วยชุดข้อมูลสินเชื่อภาษาไทย
+                    </p>
+                </div>
+                ` : ''}
+            `;
+
+            if (result.explanation.reasons && result.explanation.reasons.length > 0) {
+                html += `
+                    <div class="result-section">
+                        <h3>📋 เหตุผลสำคัญ</h3>
+                        <ul class="reason-list">
+                            ${result.explanation.reasons.map(r => `
+                                <li class="reason-item">
+                                    <strong>[${r.severity.toUpperCase()}]</strong> ${r.reason}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (result.explanation.feature_contributions && result.explanation.feature_contributions.length > 0) {
+                html += `
+                    <div class="result-section">
+                        <h3>🎯 ปัจจัยที่มีผลต่อการตัดสินใจ</h3>
+                        <div class="feature-list">
+                            ${result.explanation.feature_contributions.map(f => `
+                                <div class="feature-item">
+                                    <span class="feature-name">${f.direction === 'positive' ? '↑' : '↓'} ${f.feature}</span>
+                                    <span class="feature-value ${f.direction}">${f.impact > 0 ? '+' : ''}${f.impact.toFixed(3)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (result.explanation.recommendations && result.explanation.recommendations.length > 0) {
+                html += `
+                    <div class="result-section">
+                        <h3>💡 คำแนะนำ</h3>
+                        <ul class="reason-list">
+                            ${result.explanation.recommendations.map(r => `
+                                <li class="reason-item">${r}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = html;
+            card.classList.add('show');
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Fill example
+        function fillExample() {
+            document.getElementById('monthly_income').value = 45000;
+            document.getElementById('employment_years').value = 5;
+            document.getElementById('employment_type').value = 'permanent';
+            document.getElementById('debt_to_income').value = 0.35;
+            document.getElementById('existing_loans').value = 2;
+            document.getElementById('late_payment_count').value = 0;
+            document.getElementById('credit_utilization').value = 0.45;
+            document.getElementById('requested_amount').value = 300000;
+            document.getElementById('loan_purpose').value = 'car';
+            document.getElementById('age').value = 35;
+            document.getElementById('education_level').value = 'bachelor';
+            document.getElementById('marital_status').value = 'married';
+            document.getElementById('dependents').value = 2;
+            document.getElementById('home_ownership').value = 'own';
+            document.getElementById('savings_balance').value = 200000;
+            document.getElementById('checking_balance').value = 50000;
+            document.getElementById('credit_history_length').value = 8;
+            document.getElementById('previous_defaults').value = 0;
+        }
+
+        // Load stats on page load
+        loadStats();
+        setInterval(loadStats, 10000);
+    </script>
+</body>
+
+</html>
